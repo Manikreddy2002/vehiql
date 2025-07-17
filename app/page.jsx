@@ -16,7 +16,7 @@ export default function Home() {
         <div className="max-w-4xl mx-auto text-center">
           <div className="mb-8">
             <h1 className="text-5xl md:text-8xl mb-4 gradient font-extrabold tracking-tighter pr-2 pb-2 text-transparent bg-clip-text">Find your dream car with Vehiql AI</h1>
-            <p className="text-xl text-gray-500 mb-8 max-w-2xl mx-auto">Advanced AI car search and test drive from thousands of vehicles.</p>
+            <p className="text-xl text-gray-300 mb-8 max-w-2xl mx-auto bg-accent-foreground rounded-2xl">Advanced AI car search and test drive from thousands of vehicles.</p>
           </div>
           <HomeSearch />
         </div>
@@ -44,7 +44,7 @@ export default function Home() {
       </FadeInSection>
 
       {/* Browse By Make */}
-      <FadeInSection delay={0.2}>
+      <FadeInSection delay={0.15}>
         <section className="py-12 bg-gray-50">
           <div className="container mx-auto px-4">
             <div className="flex justify-between items-center mb-8">
@@ -82,7 +82,7 @@ export default function Home() {
 
       {/* Why Choose Our Platform */}
 
-      <FadeInSection delay={0.3}>
+      <FadeInSection delay={0.2}>
         <section className="py-16">
           <div className="container mx-auto px-4">
             <h2 className="text-2xl font-bold text-center mb-12">
@@ -124,7 +124,7 @@ export default function Home() {
       </FadeInSection>
 
       {/* Browse By Body Type */}
-      <FadeInSection delay={0.4}>
+      <FadeInSection delay={0.25}>
         <section className="py-12 bg-gray-50">
           <div className="container mx-auto px-4">
             <div className="flex justify-between items-center mb-8">
@@ -165,7 +165,7 @@ export default function Home() {
       </FadeInSection>
 
       {/* Frequently Asked Questions */}
-      <FadeInSection delay={0.5}>
+      <FadeInSection delay={0.3}>
         <section className="py-12 bg-gray-50">
           <div className="container mx-auto px-4">
             <h2 className="text-2xl font-bold text-center mb-8">Frequently Asked Questions</h2>
@@ -182,7 +182,7 @@ export default function Home() {
       </FadeInSection>
 
       {/* Ready to Find Your Dream Car? */}
-      <FadeInSection delay={0.6}>
+      <FadeInSection delay={0.35}>
         <section className="py-16 dotted-background text-white">
           <div className="container mx-auto px-4 text-center">
             <h2 className="text-3xl font-bold mb-4">
