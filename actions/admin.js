@@ -9,7 +9,7 @@ export async function getAdmin() {
     const user = await db.user.findUnique({
         where: { clerkUserId: userId },
     });
-    if (!user || !user.role !== "ADMIN") {
+    if (!user || user.role !== "ADMIN") {
         return { authorized: false, reason: "not-admin" }
     }
     return { authorized: true, user }
