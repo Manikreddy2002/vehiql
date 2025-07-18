@@ -14,3 +14,4 @@ export async function getAdmin() {
     }
     return { authorized: true, user }
 }
+
