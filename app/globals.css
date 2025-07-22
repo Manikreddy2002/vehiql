@@ -130,6 +130,8 @@
   background-size:30px 30px;
 }
 
+
+
 @layer utilities{
   .gradient{
     @apply bg-gradient-to-br from-blue-500 to-green-500;
