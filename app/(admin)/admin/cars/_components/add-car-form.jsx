@@ -30,6 +30,7 @@ import { Button } from '@/components/ui/button';
 import { X } from 'lucide-react';
 import useFetch from '@/app/hooks/use-fetch';
 import { addCar,processCarImageWithAI } from '@/actions/cars';
+import { useRouter } from 'next/navigation';
 
 
 
@@ -47,8 +48,8 @@ const bodyTypes = [
   "Pickup",
 ];
 const carStatuses = ["AVAILABLE", "UNAVAILABLE", "SOLD"];
-
 const AddCarForm = () => {
+  const router = useRouter();
   const [imageError, setImageError] = useState();
   const [uploadedImages, setUploadedImages] = useState([]);
   const [imagePreview, setImagePreview] = useState(null);
