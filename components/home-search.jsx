@@ -30,7 +30,6 @@ const HomeSearch = () => {
             return;
         }
     }
-
     const onDrop = (acceptedFiles) => {
         const file = acceptedFiles[0];
         if (file) {
@@ -38,10 +37,10 @@ const HomeSearch = () => {
                 toast.error("Image size must be less than 5MB");
                 return;
             }
-
+    
             setIsUploading(true);
             setSearchImage(file);
-
+    
             const reader = new FileReader();
             reader.onloadend = () => {
                 setImagePreview(reader.result);
@@ -55,7 +54,7 @@ const HomeSearch = () => {
             reader.readAsDataURL(file);
         }
     };
-
+    
     const { getRootProps, getInputProps, isDragActive, isDragReject } = useDropzone({
         onDrop,
         accept: {
@@ -63,6 +62,9 @@ const HomeSearch = () => {
         },
         maxFiles: 1,
     })
+    
+
+    
 
     return (
         <div>

@@ -1,6 +1,6 @@
-
-import React from 'react';
 import AddCarForm from '../_components/add-car-form';
+
+
 
 export const metadata = {
   title: "Add New Car | Vehiql Admin",

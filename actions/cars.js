@@ -1,5 +1,4 @@
 "use server";
-
 import { db } from "@/lib/prisma";
 import { createClient } from "@/lib/supabase";
 import { v4 as uuidv4 } from "uuid";
@@ -7,6 +6,7 @@ import { auth } from "@clerk/nextjs/server";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
+
 
 async function filetoBase64(file) {
     const bytes = await file.arrayBuffer();
@@ -58,7 +58,7 @@ export async function processCarImageWithAI(file) {
             For confidence, provide a value between 0 and 1 representing how confident you are in your overall identification.
             Only respond with the JSON object, nothing else.
     `;
-        const result = model.generateContent([imagePart, prompt]);
+        const result = await model.generateContent([imagePart, prompt]);
         const response = result.response;
         const text = response.text();
         const cleanedText = text.replace(/```(?:json)?\n?/g, "").trim();
