@@ -7,8 +7,6 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
 import { serializeCarData } from "@/lib/helper";
-import { serializeUseCacheCacheStore } from "next/dist/server/resume-data-cache/cache-store";
-import { success } from "zod";
 
 
 async function filetoBase64(file) {
