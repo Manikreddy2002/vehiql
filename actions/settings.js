@@ -1,4 +1,4 @@
-"user server"
+"use server"
 
 import { db } from "@/lib/prisma";
 import { auth } from "@clerk/nextjs/server";
@@ -110,9 +110,60 @@ export async function saveWorkingHours(workingHours) {
         });
         if (!user || user.role !== "ADMIN") throw new Error("Unauthorized: Admin access required");
 
-        const dealership = await db.dealershipInfo.findFirst();
-
-        if (!dealership) throw new Error("Dealership info not found");
+        let dealership = await db.dealershipInfo.findFirst();
+        if (!dealership) {
+            dealership = await db.dealershipInfo.create({
+                data: {
+                    // Default values will be used from schema
+                    workingHours: {
+                        create: [
+                            {
+                                dayOfWeek: "MONDAY",
+                                openTime: "09:00",
+                                closeTime: "18:00",
+                                isOpen: true,
+                            },
+                            {
+                                dayOfWeek: "TUESDAY",
+                                openTime: "09:00",
+                                closeTime: "18:00",
+                                isOpen: true,
+                            },
+                            {
+                                dayOfWeek: "WEDNESDAY",
+                                openTime: "09:00",
+                                closeTime: "18:00",
+                                isOpen: true,
+                            },
+                            {
+                                dayOfWeek: "THURSDAY",
+                                openTime: "09:00",
+                                closeTime: "18:00",
+                                isOpen: true,
+                            },
+                            {
+                                dayOfWeek: "FRIDAY",
+                                openTime: "09:00",
+                                closeTime: "18:00",
+                                isOpen: true,
+                            },
+                            {
+                                dayOfWeek: "SATURDAY",
+                                openTime: "10:00",
+                                closeTime: "16:00",
+                                isOpen: true,
+                            },
+                            {
+                                dayOfWeek: "SUNDAY",
+                                openTime: "10:00",
+                                closeTime: "16:00",
+                                isOpen: false,
+                            },
+                        ],
+                    },
+                },
+            });
+        }
 
         await db.workingHour.deleteMany({
             where: { dealershipId: dealership.id }
@@ -169,7 +220,7 @@ export async function getUsers() {
 
 export async function updateUserRole(userId, role) {
     try {
-        const { adminId } = await auth();
+        const { userId:adminId } = await auth();
         if (!adminId) throw new Error("Unauthorized");
 
         const user = await db.user.findUnique({
