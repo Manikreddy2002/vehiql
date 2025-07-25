@@ -2,6 +2,9 @@
 const nextConfig = {
     experimental: {
         serverComponentsHmrCache: false,
+        serverActions : {
+            bodySizeLimit : '20mb'
+        }
     },
 
     images: {

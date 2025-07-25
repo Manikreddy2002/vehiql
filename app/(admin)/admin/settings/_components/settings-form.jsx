@@ -1,6 +1,6 @@
 "use client"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Badge, CheckCircle, Clock, Loader2, Save, Search, Shield, Users, UserX } from 'lucide-react';
+import { CheckCircle, Clock, Loader2, Save, Search, Shield, Users, UserX } from 'lucide-react';
 import useFetch from "@/hooks/use-fetch";
 import {
     getDealershipInfo,
@@ -18,13 +18,14 @@ import { Button } from '@/components/ui/button';
 
 import { toast } from 'sonner';
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
 } from "@/components/ui/table";
+import { Badge } from '@/components/ui/badge';
 
 const DAYS = [
     { value: "MONDAY", label: "Monday" },
@@ -47,7 +48,7 @@ const SettingsForm = () => {
     );
 
     const [userSearch, setUserSearch] = useState("");
-    
+
 
     // Custom hooks for API calls
     const {
@@ -80,23 +81,23 @@ const SettingsForm = () => {
     } = useFetch(updateUserRole);
 
     // Handle errors
-  useEffect(() => {
-    if (settingsError) {
-      toast.error("Failed to load dealership settings");
-    }
+    useEffect(() => {
+        if (settingsError) {
+            toast.error("Failed to load dealership settings");
+        }
 
-    if (saveError) {
-      toast.error(`Failed to save working hours: ${saveError.message}`);
-    }
+        if (saveError) {
+            toast.error(`Failed to save working hours: ${saveError.message}`);
+        }
 
-    if (usersError) {
-      toast.error("Failed to load users");
-    }
+        if (usersError) {
+            toast.error("Failed to load users");
+        }
 
-    if (updateRoleError) {
-      toast.error(`Failed to update user role: ${updateRoleError.message}`);
-    }
-  }, [settingsError, saveError, usersError, updateRoleError]);
+        if (updateRoleError) {
+            toast.error(`Failed to update user role: ${updateRoleError.message}`);
+        }
+    }, [settingsError, saveError, usersError, updateRoleError]);
 
     useEffect(() => {
         fetchDealershipInfo();
@@ -105,28 +106,28 @@ const SettingsForm = () => {
     const handleSaveHours = async () => {
         setSaveResult(undefined); // Reset before saving to ensure useEffect triggers
         await saveHours(workingHours);
-        
+
     };
     //make user admin
-    const handleMakeAdmin = async(user)=>{
-        
-        if(
+    const handleMakeAdmin = async (user) => {
+
+        if (
             confirm(
                 `Are you sure you want to give admin privileges to ${user.name || user.email}? Admin users can manage all aspects of the dealership.`
 
             )
         )
-        await updateRole(user.id,"ADMIN");
+            await updateRole(user.id, "ADMIN");
     };
 
     //remove admin activites 
-    const handleRemoveAdmin = async(user)=>{
-       if(
+    const handleRemoveAdmin = async (user) => {
+        if (
             confirm(
                 `Are you sure you want to remove admin privileges from ${user.name || user.email}? They will no longer be able to access the admin dashboard.`
             )
         )
-        await updateRole(user.id,"USER");
+            await updateRole(user.id, "USER");
     };
     //to handle working hours when settings data is feteched
     useEffect(() => {
@@ -175,18 +176,18 @@ const SettingsForm = () => {
         if (updateRoleResult?.success) {
             toast.success("User role updated successfully");
             fetchUsers();
-            
+
         }
     }, [saveResult, updateRoleResult]);
 
     //filter users by search term.
     const filteredUsers = usersData?.success
-    ? usersData.data.filter(
-        (user) =>
-          user.name?.toLowerCase().includes(userSearch.toLowerCase()) ||
-          user.email.toLowerCase().includes(userSearch.toLowerCase())
-      )
-    : [];
+        ? usersData.data.filter(
+            (user) =>
+                user.name?.toLowerCase().includes(userSearch.toLowerCase()) ||
+                user.email.toLowerCase().includes(userSearch.toLowerCase())
+        )
+        : [];
 
 
     const handleWorkingHourChange = (index, field, value) => {
@@ -261,7 +262,7 @@ const SettingsForm = () => {
                                                             }
                                                             className="text-sm"
                                                         />
-                                                     </div>
+                                                    </div>
                                                 </div>
 
                                                 <div className="text-center col-span-1">to</div>
@@ -368,15 +369,15 @@ const SettingsForm = () => {
                                                     </TableCell>
                                                     <TableCell>{user.email}</TableCell>
                                                     <TableCell>
-                                                    <Badge
-                              className={
-                                user.role === "ADMIN"
-                                  ? "bg-green-800"
-                                  : "bg-gray-800"
-                              }
-                            >
-                              {user.role}
-                            </Badge>
+                                                        <Badge
+                                                            className={
+                                                                user.role === "ADMIN"
+                                                                    ? "bg-green-800"
+                                                                    : "bg-gray-800"
+                                                            }
+                                                        >
+                                                            {user.role}
+                                                        </Badge>
                                                     </TableCell>
                                                     <TableCell className="text-right">
                                                         {user.role === "ADMIN" ? (
@@ -394,7 +395,7 @@ const SettingsForm = () => {
                                                             <Button
                                                                 variant="outline"
                                                                 size="sm"
-                                                                onClick={() => handleMakeAdmin(user) }
+                                                                onClick={() => handleMakeAdmin(user)}
                                                                 disabled={updatingRole}
                                                             >
                                                                 <Shield className="h-4 w-4 mr-2" />
@@ -423,8 +424,8 @@ const SettingsForm = () => {
                         </CardContent>
                     </Card>
 
-                    
-                    
+
+
                 </TabsContent>
             </Tabs>
 
