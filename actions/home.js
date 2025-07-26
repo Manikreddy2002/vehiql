@@ -6,7 +6,7 @@ import { db } from "@/lib/prisma";
 import { request } from "@arcjet/next";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
-export async function getFeaturedCars(limit = 3) {
+export async function getFeaturedCars(limit = 3){
     try {
         const cars = await db.car.findMany({
             where: {

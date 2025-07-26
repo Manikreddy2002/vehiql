@@ -166,19 +166,22 @@ const SettingsForm = () => {
     }, [settingsData]);
 
 
-    // to handle working hours saved sucessfully
+    //  toast to handle working hours saved sucessfully
     useEffect(() => {
         if (saveResult?.success) {
             toast.success("Working hours saved successfully");
             fetchDealershipInfo();
         }
+    }, [saveResult]);
+    //toast for user role updated successfully
+    useEffect(() => {
 
         if (updateRoleResult?.success) {
             toast.success("User role updated successfully");
             fetchUsers();
 
         }
-    }, [saveResult, updateRoleResult]);
+    }, [updateRoleResult]);
 
     //filter users by search term.
     const filteredUsers = usersData?.success
