@@ -130,10 +130,20 @@
   background-size:30px 30px;
 }
 
+/* Gradient title for Browse Cars */
+.gradient-title {
+  background: linear-gradient(90deg, #009ffd 0%, #2a8cff 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  color: transparent;
+  display: inline-block;
+}
 
 
 @layer utilities{
   .gradient{
     @apply bg-gradient-to-br from-blue-500 to-green-500;
   }
+  
 }
