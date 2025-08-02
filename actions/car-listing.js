@@ -1,3 +1,4 @@
+"use server";
 import { serializeCarData } from "@/lib/helper";
 import { db } from "@/lib/prisma";
 import { auth } from "@clerk/nextjs/server";
@@ -6,7 +7,7 @@ import { revalidatePath } from "next/cache";
 export async function getCarFilters() {
 
     try {
-        const makes = db.car.findMany({
+        const makes = await db.car.findMany({
             where: { status: "AVAILABLE" },
             select: { make: true },
             distinct: ["make"],
