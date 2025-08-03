@@ -28,6 +28,7 @@ const CarCard = ({ car }) => {
         if (toggleResult?.success && toggleResult.saved !== isSaved) {
             setIsSaved(toggleResult.saved);
             toast.success(toggleResult.message);
+            
         }
     }, [toggleResult, isSaved]);
     useEffect(() => {
