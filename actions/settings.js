@@ -220,7 +220,7 @@ export async function getUsers() {
 
 export async function updateUserRole(userId, role) {
     try {
-        const { userId:adminId } = await auth();
+        const { userId: adminId } = await auth();
         if (!adminId) throw new Error("Unauthorized");
 
         const user = await db.user.findUnique({
