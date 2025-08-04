@@ -1,3 +1,4 @@
+"use client"
 import { getFeaturedCars } from "@/actions/home";
 import CarCard from "@/components/car-card";
 import FadeInSection from "@/components/fadein";
@@ -9,9 +10,26 @@ import { SignedOut } from "@clerk/nextjs";
 import { Calendar, Car, ChevronRight, Shield } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 
-export default async function Home() {
-  const featuredCars = await getFeaturedCars();
+export default function Home() {
+  const [featuredCars, setFeaturedCars] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchFeaturedCars = async () => {
+      try {
+        const cars = await getFeaturedCars();
+        setFeaturedCars(cars);
+      } catch (error) {
+        console.error("Error fetching featured cars:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchFeaturedCars();
+  }, []);
 
   return (
     <div className="pt-20 flex flex-col">
@@ -39,9 +57,16 @@ export default async function Home() {
             </div>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {featuredCars.map((car) => {
-              return <CarCard key={car.id} car={car} />
-            })}
+            {loading ? (
+              // Loading skeleton
+              Array.from({ length: 3 }).map((_, index) => (
+                <div key={index} className="bg-gray-200 rounded-lg h-80 animate-pulse"></div>
+              ))
+            ) : (
+              featuredCars.map((car) => {
+                return <CarCard key={car.id} car={car} />
+              })
+            )}
           </div>
         </section>
       </FadeInSection>
