@@ -7,43 +7,20 @@ import { request } from "@arcjet/next";
 import { auth } from "@clerk/nextjs/server";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
-export async function getFeaturedCars(limit = 3){
-    try {
-      const { userId } = await auth(); // Get the user ID
-      let dbUser = null;
-
-      if (userId) {
-        dbUser = await db.user.findUnique({ // Find the user in the database
-          where: { clerkUserId: userId }  
-        });
-      }
-
-      const cars = await db.car.findMany({
-        where: {
-          featured: true,
-          status: "AVAILABLE",
-        },
-        take: limit,
-        orderBy: { createdAt: "desc" },
-        include: {
-          savedBy: {
-            where: dbUser ? {
-              userId: dbUser.id,
-            } : undefined,
-            select: {
-              id: true,
-            },
-          },
-        },
-      });
-
-      return cars.map((car) => ({
-        ...serializeCarData(car),
-        wishlisted: car.savedBy.length > 0,
-      }));
-    } catch (error) {
-        throw new Error("Error fetching featured cars:" + error.message);
-    }
+export async function getFeaturedCars(limit = 3) {
+  try {
+    const cars = await db.car.findMany({
+      where: {
+        featured: true,
+        status: "AVAILABLE",
+      },
+      take: limit,
+      orderBy: { createdAt: "desc" },
+    })
+    return cars.map(serializeCarData);
+  } catch (error) {
+    throw new Error("Error fetching featured cars:" + error.message);
+  }
 }
 
 async function fileToBase64(file) {
