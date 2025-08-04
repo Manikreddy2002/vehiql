@@ -2,9 +2,7 @@
 import { serializeCarData } from "@/lib/helper";
 import { db } from "@/lib/prisma";
 import { auth } from "@clerk/nextjs/server";
-import { P } from "framer-motion/dist/types.d-Bq-Qm38R";
 import { revalidatePath } from "next/cache";
-import { success } from "zod";
 
 export async function getCarFilters() {
 
