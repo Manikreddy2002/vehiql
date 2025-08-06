@@ -1,5 +1,5 @@
 import { getSavedCars } from "@/actions/car-listing";
-import SavedCarsList from "./_components/saved-cars-list";
+import { SavedCarsList } from "./_components/saved-cars-list";
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 
@@ -20,7 +20,7 @@ export default async function SavedCarsPage() {
 
   return (
     <div className="container mx-auto px-4 py-12">
-      <h1 className="text-6xl mb-6  mt-10gradient font-extrabold tracking-tighter pr-2 pb-2 text-transparent bg-clip-text">Your Saved Cars</h1>
+      <h1 className="text-6xl mb-6  mt-10 gradient font-extrabold tracking-tighter pr-2 pb-2 text-transparent bg-clip-text">Your Saved Cars</h1>
       <SavedCarsList initialData={savedCarsResult} />
     </div>
   );
