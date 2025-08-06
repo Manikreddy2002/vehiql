@@ -6,7 +6,7 @@ import HomeSearch from "@/components/home-search";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
 import { bodyTypes, carMakes, faqItems } from "@/lib/data";
-import { SignedOut } from "@clerk/nextjs";
+import { SignedOut, useAuth } from "@clerk/nextjs";
 import { Calendar, Car, ChevronRight, Shield } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -15,21 +15,28 @@ import { useEffect, useState } from "react";
 export default function Home() {
   const [featuredCars, setFeaturedCars] = useState([]);
   const [loading, setLoading] = useState(true);
+  const { isSignedIn } = useAuth();
+
+  const fetchFeaturedCars = async () => {
+    try {
+      setLoading(true);
+      const cars = await getFeaturedCars();
+      setFeaturedCars(cars);
+    } catch (error) {
+      console.error("Error fetching featured cars:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchFeaturedCars = async () => {
-      try {
-        const cars = await getFeaturedCars();
-        setFeaturedCars(cars);
-      } catch (error) {
-        console.error("Error fetching featured cars:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchFeaturedCars();
-  }, []);
+  }, [isSignedIn]); // Re-fetch when authentication state changes
+
+  const handleSaveStateChange = (carId, isSaved) => {
+    // Re-fetch featured cars to update the save state
+    fetchFeaturedCars();
+  };
 
   return (
     <div className="pt-20 flex flex-col">
@@ -64,7 +71,7 @@ export default function Home() {
               ))
             ) : (
               featuredCars.map((car) => {
-                return <CarCard key={car.id} car={car} />
+                return <CarCard key={car.id} car={car} onSaveStateChange={handleSaveStateChange} />
               })
             )}
           </div>

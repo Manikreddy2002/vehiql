@@ -9,6 +9,15 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 
 export async function getFeaturedCars(limit = 3) {
   try {
+    const { userId } = await auth();
+    let dbUser = null;
+
+    if (userId) {
+      dbUser = await db.user.findUnique({
+        where: { clerkUserId: userId }
+      })
+    }
+
     const cars = await db.car.findMany({
       where: {
         featured: true,
@@ -17,7 +26,20 @@ export async function getFeaturedCars(limit = 3) {
       take: limit,
       orderBy: { createdAt: "desc" },
     })
-    return cars.map(serializeCarData);
+
+    let wishlisted = new Set();
+    if (dbUser) {
+      const savedCars = await db.userSavedCar.findMany({
+        where: { userId: dbUser.id },
+        select: { carId: true },
+      });
+
+      wishlisted = new Set(savedCars.map((saved) => saved.carId));
+    }
+
+    return cars.map((car) =>
+      serializeCarData(car, wishlisted.has(car.id))
+    );
   } catch (error) {
     throw new Error("Error fetching featured cars:" + error.message);
   }
