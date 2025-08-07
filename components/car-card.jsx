@@ -11,7 +11,7 @@ import { toast } from 'sonner'
 import { useAuth } from '@clerk/nextjs'
 import { toggleSavedCar } from "@/actions/car-listing";
 
-const CarCard = ({ car }) => {
+const CarCard = ({ car, onSaveStateChange }) => {
     const [isSaved, setIsSaved] = useState(car.wishlisted);
     const router = useRouter();
     const{isSignedIn} = useAuth();
@@ -29,8 +29,12 @@ const CarCard = ({ car }) => {
             setIsSaved(toggleResult.saved);
             toast.success(toggleResult.message);
             
+            // Notify parent component about the save state change
+            if (onSaveStateChange) {
+                onSaveStateChange(car.id, toggleResult.saved);
+            }
         }
-    }, [toggleResult, isSaved]);
+    }, [toggleResult, isSaved, onSaveStateChange, car.id]);
     useEffect(() => {
         if (toggleError) {
             toast.error("Failed to update favorites");
