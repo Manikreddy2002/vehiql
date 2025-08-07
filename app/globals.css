@@ -147,3 +147,152 @@
   }
   
 }
+
+/* 3D Dialog Animation */
+@keyframes dialog3dIn {
+  0% {
+    opacity: 0;
+    transform: perspective(800px) scale(0.8) rotateX(-30deg);
+    border-radius: 2rem;
+  }
+  60% {
+    opacity: 1;
+    transform: perspective(800px) scale(1.05) rotateX(8deg);
+    border-radius: 1.5rem;
+  }
+  100% {
+    opacity: 1;
+    transform: perspective(800px) scale(1) rotateX(0deg);
+    border-radius: 1rem;
+  }
+}
+
+@keyframes dialog3dOut {
+  0% {
+    opacity: 1;
+    transform: perspective(800px) scale(1) rotateX(0deg);
+    border-radius: 1rem;
+  }
+  100% {
+    opacity: 0;
+    transform: perspective(800px) scale(0.8) rotateX(30deg);
+    border-radius: 2rem;
+  }
+}
+
+/* Enhanced 3D Dialog Animation for all dialog parts */
+.dialog-3d-animate {
+  border-radius: 1.25rem !important;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+  animation: dialog3dIn 0.7s cubic-bezier(0.23, 1, 0.32, 1);
+  will-change: transform, opacity, border-radius;
+  background: var(--color-card, #fff);
+  transition: border-radius 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: stretch;
+  padding-top: 1.25rem;
+  padding-bottom: 1.25rem;
+}
+
+.dialog-3d-animate > * {
+  border-radius: 1.25rem !important;
+  background: transparent;
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+.dialog-3d-item, .dialog-3d-animate {
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+}
+
+.dialog-3d-animate[data-state='closed'] {
+  animation: dialog3dOut 0.5s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+}
+
+/* Make button and info blocks inside dialog also rounded and consistent */
+.dialog-3d-animate button,
+.dialog-3d-animate .rounded,
+.dialog-3d-animate .rounded-lg {
+  border-radius: 1.25rem !important;
+  transition: border-radius 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+/* 3D Animation for dialog inner blocks with stagger */
+@keyframes dialog3dItemIn {
+  0% {
+    opacity: 0;
+    transform: perspective(600px) scale(0.8) rotateY(-30deg);
+  }
+  60% {
+    opacity: 1;
+    transform: perspective(600px) scale(1.05) rotateY(8deg);
+  }
+  100% {
+    opacity: 1;
+    transform: perspective(600px) scale(1) rotateY(0deg);
+  }
+}
+
+.dialog-3d-item {
+  animation: dialog3dItemIn 0.7s cubic-bezier(0.23, 1, 0.32, 1);
+  background: inherit;
+  border-radius: 1.25rem;
+  will-change: transform, opacity;
+}
+
+/* Staggered animation for each info row */
+.dialog-3d-item:nth-child(1) { animation-delay: 0.08s; }
+.dialog-3d-item:nth-child(2) { animation-delay: 0.16s; }
+.dialog-3d-item:nth-child(3) { animation-delay: 0.24s; }
+.dialog-3d-item:nth-child(4) { animation-delay: 0.32s; }
+.dialog-3d-item:nth-child(5) { animation-delay: 0.40s; }
+
+.custom-dialog-box {
+  max-width: 320px;
+  background: #eaf2fb;
+  border: 3px solid #2563eb;
+  border-radius: 1.5rem;
+  box-shadow: 0 4px 24px rgba(37,99,235,0.10);
+  padding: 1.25rem 1rem 1rem 1rem;
+  position: relative;
+  margin: 0 auto;
+  min-width: 0;
+}
+
+.custom-dialog-close-tab {
+  position: absolute;
+  top: -18px;
+  right: 18px;
+  background: #2563eb;
+  color: #fff;
+  border-radius: 0 0.75rem 0 0.75rem;
+  width: 38px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  box-shadow: 0 2px 8px rgba(37,99,235,0.10);
+  font-size: 1.1rem;
+  cursor: pointer;
+  border: 2px solid #eaf2fb;
+}
+
+@media (max-width: 400px) {
+  .custom-dialog-box {
+    max-width: 95vw;
+    padding: 0.75rem 0.5rem 0.5rem 0.5rem;
+  }
+  .custom-dialog-close-tab {
+    right: 8px;
+    width: 32px;
+    height: 28px;
+    font-size: 1rem;
+  }
+}
