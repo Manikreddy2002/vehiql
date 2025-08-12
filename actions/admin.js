@@ -144,6 +144,8 @@ export async function updateTestDriveStatus(bookingId, newStatus) {
 
         revalidatePath("/admin/test-drives");
         revalidatePath("/reservations");
+        // Ensure the admin dashboard stats refresh after a status update
+        revalidatePath("/admin");
 
         return {
             success: true,

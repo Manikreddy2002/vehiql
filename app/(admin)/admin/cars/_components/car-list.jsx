@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { CarIcon, Eye, Loader, Loader2, MoreHorizontal, Plus, Search, Star, StarOff, Trash2 } from 'lucide-react'
 import { Input } from '@/components/ui/input'
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import useFetch from '@/hooks/use-fetch';
 import { deleteCar, getCars, updateCarStatus } from '@/actions/cars';
 import { Card, CardContent } from '@/components/ui/card';
@@ -18,7 +18,11 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 
 const CarsList = () => {
 
+  const searchParams = useSearchParams();
+  const initialStatus = searchParams.get('status') || '';
   const [search, setSearch] = useState('');
+  const [statusFilter, setStatusFilter] = useState(initialStatus);
+  
   const [carToDelete, setCarToDelete] = useState(null);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
@@ -32,8 +36,8 @@ const CarsList = () => {
   } = useFetch(getCars);
 
   useEffect(() => {
-    fetchCars(search);
-  }, [search]);
+    fetchCars({ search, status: statusFilter });
+  }, [search, statusFilter]);
 
   const {
     loading: deletingCar,
@@ -77,7 +81,7 @@ const CarsList = () => {
 
   const handleSearchSubmit = (e) => {
     e.preventDefault();
-    fetchCars(search);
+    fetchCars({ search, status: statusFilter });
   };
 
   const handleDeleteCar = async () => {
@@ -139,6 +143,18 @@ const CarsList = () => {
             />
           </div>
         </form>
+        <div className='flex items-center gap-2'>
+          <select
+            className='border rounded-md h-9 px-2 text-sm'
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value)}
+          >
+            <option value=''>All</option>
+            <option value='AVAILABLE'>Available</option>
+            <option value='UNAVAILABLE'>Unavailable</option>
+            <option value='SOLD'>Sold</option>
+          </select>
+        </div>
       </div>
       {/*cars table*/}
       <Card>

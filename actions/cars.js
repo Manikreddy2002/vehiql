@@ -205,7 +205,7 @@ export async function addCar({ carData, images }) {
   }
 }
 
-export async function getCars(search = "") {
+export async function getCars(params = "") {
   try {
     const { userId } = await auth();
     if (!userId) throw new Error("Unauthorized");
@@ -218,12 +218,26 @@ export async function getCars(search = "") {
 
     let where = {};
 
+    // Support both legacy string arg and new object arg
+    let search = "";
+    let status = "";
+    if (typeof params === "string") {
+      search = params;
+    } else if (params && typeof params === "object") {
+      search = params.search || "";
+      status = params.status || "";
+    }
+
     if (search) {
       where.OR = [
         { make: { contains: search, mode: "insensitive" } },
         { model: { contains: search, mode: "insensitive" } },
-        { color: { contains: search, mode: "insensitive" } }
-      ]
+        { color: { contains: search, mode: "insensitive" } },
+      ];
+    }
+
+    if (status) {
+      where.status = status;
     }
 
     const cars = await db.car.findMany({
