@@ -1,5 +1,5 @@
 import { getDashboardData } from '@/actions/admin';
-import {Dashboard} from "./_components/dashboard";
+import Dashboard from "./_components/dashboard";
 import React from 'react'
 
 export const metadata = {
