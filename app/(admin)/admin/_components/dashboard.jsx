@@ -7,10 +7,11 @@ import {
 } from "@/components/ui/alert";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { Calendar, DollarSign, Info, TrendingUp, Car } from "lucide-react";
+import { Calendar, DollarSign, Info, TrendingUp, Car, Timer, Watch, Clock, ArrowRightIcon, CircleCheck, CircleCheckBig, CircleCheckBigIcon, CircleDivideIcon, CircleStop, CircleX } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
+
 
 const Dashboard = ({ initialData }) => {
   const [activeTab, setActiveTab] = useState("overview");
@@ -32,24 +33,74 @@ const Dashboard = ({ initialData }) => {
   // Calculations (use cars.total instead of cars.totalCars)
   const availablePercent = cars.total ? ((cars.available / cars.total) * 100) : 0;
   const soldPercent = cars.total ? ((cars.sold / cars.total) * 100) : 0;
-  const testDriveSuccessPercent = testDrives.total ? ((testDrives.completed / testDrives.total) * 100) : 0;
-  
+  const pendingPercent = testDrives.total
+    ? (testDrives.pending / testDrives.total) * 100
+    : 0;
+  const confirmedPercent = testDrives.total
+    ? (testDrives.confirmed / testDrives.total) * 100
+    : 0;
+  const completedPercent = testDrives.total
+    ? (testDrives.completed / testDrives.total) * 100
+    : 0;
+  const cancelledPercent = testDrives.total
+    ? (testDrives.cancelled / testDrives.total) * 100
+    : 0;
+  const noShowPercent = testDrives.total
+    ? (testDrives.noShow / testDrives.total) * 100
+    : 0;
+
+  // ✅ Add this
+  const testDriveSuccessPercent = testDrives.total
+    ? (testDrives.completed / testDrives.total) * 100
+    : 0;
+
+
+
   // Animated progress values on mount/page visit
   const [availableAnim, setAvailableAnim] = useState(0);
   const [testDriveAnim, setTestDriveAnim] = useState(0);
+
+  const [pendingAnim, setPendingAnim] = useState(0);
+  const [confirmedAnim, setConfirmedAnim] = useState(0);
+  const [completedAnim, setCompletedAnim] = useState(0);
+  const [cancelledAnim, setCancelledAnim] = useState(0);
+  const [noShowAnim, setNoShowAnim] = useState(0);
+
+
+
+
+
+  // Trigger animations on mount
 
   useEffect(() => {
     // reset to 0 then animate to target to trigger CSS transitions
     setAvailableAnim(0);
     setTestDriveAnim(0);
+    setPendingAnim(0);
+    setConfirmedAnim(0);
+    setCompletedAnim(0);
+    setCancelledAnim(0);
+    setNoShowAnim(0);
     const id = setTimeout(() => {
       setAvailableAnim(availablePercent);
       setTestDriveAnim(testDriveSuccessPercent);
+      setPendingAnim(pendingPercent);
+      setConfirmedAnim(confirmedPercent);
+      setCompletedAnim(completedPercent);
+      setCancelledAnim(cancelledPercent);
+      setNoShowAnim(noShowPercent);
     }, 50);
     return () => clearTimeout(id);
-  }, [availablePercent, testDriveSuccessPercent]);
+  }, [availablePercent, testDriveSuccessPercent, pendingPercent,
+    confirmedPercent,
+    completedPercent,
+    cancelledPercent,
+    noShowPercent,
+  ]);
   const upcomingTestDrives = testDrives.pending + testDrives.confirmed;
   const inventoryUtilization = cars.total ? ((cars.available / cars.total) * 100) : 0;
+
+
 
   return (
     <div className="space-y-6">
@@ -192,10 +243,194 @@ const Dashboard = ({ initialData }) => {
         </TabsContent>
         <TabsContent value="test-drive" className="space-y-6">
           {/* Add test drive details here if needed */}
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-5">
+            <Card className="cursor-pointer transition-shadow hover:shadow-md">
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Total Bookings</CardTitle>
+                <Calendar className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">{testDrives.total}</div>
+                <p className="text-sm text-muted-foreground">
+
+
+                </p>
+              </CardContent>
+            </Card>
+            <Card className="cursor-pointer transition-shadow hover:shadow-md">
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Pendings</CardTitle>
+                <Clock className="h-4 w-4 text-muted-foreground" style={{ color: 'orange' }} />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">{testDrives.pending}</div>
+                <p className="text-sm text-muted-foreground">
+                  {(testDrives.pending / testDrives.total * 100).toFixed(1)}% of Bookings
+
+                </p>
+              </CardContent>
+            </Card>
+            <Card className="cursor-pointer transition-shadow hover:shadow-md">
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Confirmed</CardTitle>
+                <CircleCheckBigIcon className="h-4 w-4 text-muted-foreground" style={{ color: "green" }} />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">{testDrives.confirmed}</div>
+                <p className="text-sm text-muted-foreground">
+                  {(testDrives.confirmed / testDrives.total * 100).toFixed(1)}% of Bookings
+
+                </p>
+              </CardContent>
+            </Card>
+            <Card className="cursor-pointer transition-shadow hover:shadow-md">
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Completed</CardTitle>
+                <CircleCheckBigIcon className="h-4 w-4 text-muted-foreground" style={{ color: 'blue' }} />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">{testDrives.completed}</div>
+                <p className="text-sm text-muted-foreground">
+                  {(testDrives.completed / testDrives.total * 100).toFixed(1)}% of Bookings
+
+                </p>
+              </CardContent>
+            </Card>
+            <Card className="cursor-pointer transition-shadow hover:shadow-md">
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Cancelled</CardTitle>
+                <CircleX className="h-4 w-4 text-muted-foreground" style={{ color: 'red' }} />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">{testDrives.cancelled}</div>
+                <p className="text-sm text-muted-foreground">
+                  {(testDrives.cancelled / testDrives.total * 100).toFixed(1)}% of Bookings
+
+                </p>
+              </CardContent>
+            </Card>
+          </div>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Test Drive Statistics</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-6">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="bg-gray-50 p-4 rounded-lg">
+                    <h3 className="text-lg font-medium mb-2">Conversion Rate</h3>
+                    <div className="text-3xl font-bold text-blue-600">
+                      {testDrives.conversionRate}%
+                    </div>
+                    <p className="text-sm text-gray-600 mt-1">
+                      Test drives resulting in car purchases
+                    </p>
+                  </div>
+                  <div className="bg-gray-50 p-4 rounded-lg">
+                    <h3 className="text-lg font-medium mb-2">Completion Rate</h3>
+                    <div className="text-3xl font-bold text-green-600">
+                      {(testDrives.completed / testDrives.total * 100).toFixed(0)}%
+                    </div>
+                    <p className="text-sm text-gray-600 mt-1">
+                      Test drives succesfully completed
+                    </p>
+                  </div>
+                </div>
+                <div className="p-4 rounded-lg">
+                  <h3 className="text-lg font-medium mb-2">Booking Status BreakDown</h3>
+                  <div>
+                    <p className="text-sm text-gray-600">Pending</p>
+                    <div className="flex items-center gap-2">
+                      <div className="  relative-flex  overflow-hidden  w-full bg-gray-200 rounded-full h-2.5">
+                        <div
+                          className="h-2.5 rounded-full transition-all duration-700"
+                          style={{
+                            width: `${pendingAnim}%`,
+                            backgroundColor: "orange",
+                          }}
+                        ></div>
+                      </div>
+                      <span className="text-sm font-medium">{pendingAnim.toFixed(0)}%</span>
+                    </div>
+                  </div>
+
+                  {/* Confirmed */}
+                  <div>
+                    <p className="text-sm text-gray-600">Confirmed</p>
+                    <div className="flex items-center gap-2">
+                    <div className="  relative-flex  overflow-hidden  w-full bg-gray-200 rounded-full h-2.5">
+                      <div
+                        className="h-2.5 rounded-full transition-all duration-700"
+                        style={{
+                          width: `${confirmedAnim}%`,
+                          backgroundColor: "green",
+                        }}
+                      ></div>
+                    </div>
+                    <span>{confirmedAnim.toFixed(0)}%</span>
+                  </div>
+                  </div>
+                  {/* Completed */}
+                  <div>
+                    <p className="text-sm text-gray-600">Completed</p>
+                    <div className="flex items-center gap-2">
+                    <div className="  relative-flex  overflow-hidden  w-full bg-gray-200 rounded-full h-2.5">
+                      <div
+                        className="h-2.5 rounded-full transition-all duration-700"
+                        style={{
+                          width: `${completedAnim}%`,
+                          backgroundColor: "blue",
+                        }}
+                      ></div>
+                    </div>
+                    <span>{completedAnim.toFixed(0)}%</span>
+                    </div>
+                  </div>
+                  {/* Cancelled */}
+                  <div>
+                    <p className="text-sm text-gray-600">Cancelled</p>
+                    <div className="flex items-center gap-2">
+                    <div className="  relative-flex  overflow-hidden  w-full bg-gray-200 rounded-full h-2.5">
+                      <div
+                        className="h-2.5 rounded-full transition-all duration-700"
+                        style={{
+                          width: `${cancelledAnim}%`,
+                          backgroundColor: "red",
+                        }}
+                      ></div>
+                    </div>
+                    <span>{cancelledAnim.toFixed(0)}%</span>
+                    </div>
+                  </div>
+                  {/* No Show */}
+                  <div>
+                    <p className="text-sm text-gray-600">No Show</p>
+                    <div className="flex items-center gap-2">
+                    <div className="w-full bg-gray-200 rounded-full h-2.5 overflow-hidden  relative-flex">
+                      <div
+                        className="h-2.5 rounded-full transition-all duration-700"
+                        style={{
+                          width: `${noShowAnim}%`,
+                          backgroundColor: "purple",
+                        }}
+                      ></div>
+                    </div>
+                    <span>{noShowAnim.toFixed(0)}%</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+
+
         </TabsContent>
       </Tabs>
     </div>
   );
 };
+
 
 export default Dashboard;
