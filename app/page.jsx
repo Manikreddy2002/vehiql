@@ -57,7 +57,7 @@ export default function Home() {
             <div className="flex justify-between items-center mb-8">
               <h2 className="text-2xl font-bold">Featured Cars</h2>
               <Button variant="ghost" className="flex items-center " asChild>
-                <Link href="/">
+                <Link href="/cars">
                   View All <ChevronRight className="ml-1 h-4 w-4" />
                 </Link>
               </Button>

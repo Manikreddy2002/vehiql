@@ -223,7 +223,7 @@ const CarFilters = ({ filtersData }) => {
                 </div>
             </div>
         </div>
-        {/* sort selectio*/}
+        {/* sort selection*/}
         <Select
             value={sortBy}
             onValueChange={(value) => {
