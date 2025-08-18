@@ -1,6 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
     experimental: {
+        optimizeCss: false,
         serverComponentsHmrCache: false,
         serverActions : {
             bodySizeLimit : '20mb'

@@ -4,6 +4,8 @@ import Header from "@/components/header";
 import { ClerkProvider } from "@clerk/nextjs";
 import { Toaster } from "sonner";
 
+export const runtime = 'nodejs';
+
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
