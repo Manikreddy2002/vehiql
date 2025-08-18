@@ -28,7 +28,8 @@ const HomeSearch = () => {
     const handleTextSubmit = (e) => {
         e.preventDefault();
         if (!searchTerm.trim()) {
-            toast.error("Please enter a search Term")
+            toast.error("Please enter a search term");
+            return;
         }
         router.push(`/cars?search=${encodeURIComponent(searchTerm)}`)
     }
@@ -99,12 +100,16 @@ const HomeSearch = () => {
                         type="text"
                         placeholder="Search cars..."
                         className="block sm:hidden pl-5 pr-6 py-3 w-full rounded-full border-gray-300 bg-white/95 backdrop-blur-sm"
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
                     />
 
                     <input
                         type="text"
                         placeholder="Enter make, model, or use our AI Image Search..."
                         className="hidden sm:block pl-10 pr-12 py-6 w-full rounded-full border-gray-300 bg-white/95 backdrop-blur-sm"
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
                     />
                     <div className="absolute right-[100px]">
                         <Camera
