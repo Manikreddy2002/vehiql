@@ -95,13 +95,17 @@ const HomeSearch = () => {
         <div>
             <form onSubmit={handleTextSubmit}>
                 <div className='relative flex items-center'>
-                    <Input
+                    <input
+                        type="text"
+                        placeholder="Search cars..."
+                        className="block sm:hidden pl-5 pr-6 py-3 w-full rounded-full border-gray-300 bg-white/95 backdrop-blur-sm"
+                    />
+
+                    <input
                         type="text"
                         placeholder="Enter make, model, or use our AI Image Search..."
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                        className="pl-10 pr-12 py-6 w-full rounded-full border-gray-300 bg-white/95
-                        backdrop-blur-sm"/>
+                        className="hidden sm:block pl-10 pr-12 py-6 w-full rounded-full border-gray-300 bg-white/95 backdrop-blur-sm"
+                    />
                     <div className="absolute right-[100px]">
                         <Camera
                             size={35}
@@ -169,7 +173,7 @@ const HomeSearch = () => {
                                 type="submit"
                                 className="w-full mt-2"
                                 disabled={isUploading || isProcessing}>{
-                                    isUploading ? "Uploading..." : isProcessing ? "Analyzing Image ... " :"Search with this Image"}</Button>}
+                                    isUploading ? "Uploading..." : isProcessing ? "Analyzing Image ... " : "Search with this Image"}</Button>}
                         </form>
                     </div>
                 )

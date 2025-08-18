@@ -112,7 +112,7 @@ const CarCard = ({ car, onSaveStateChange }) => {
                 </Badge>
             </div>
 
-            <div className="flex justify-between">
+            <div className="flex justify-between mb-1">
                 <Button
                     className="flex-1"
                     onClick={() => {

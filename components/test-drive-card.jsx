@@ -139,7 +139,7 @@ const TestDriveCard = (
                             <Button
                                 variant="outline"
                                 size="sm"
-                                className="w-full my-2 sm:mb-0"
+                                className="w-full my-2 mb-1"
                                 asChild
                             >
                                 <Link
