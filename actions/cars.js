@@ -270,7 +270,7 @@ export async function deleteCar(id) {
 
     if (!user) throw new Error("User not found");
 
-    const car = await db.car.findMany({
+    const car = await db.car.findUnique({
       where: { id },
       select: { images: true },
     });
@@ -293,7 +293,7 @@ export async function deleteCar(id) {
       const filePaths = car.images.map((imageUrl) => {
         const url = new URL(imageUrl);
         const pathMatch = url.pathname.match(/\/car-images\/(.*)/);
-        return pathMatch ? path[1] : null;
+        return pathMatch ? pathMatch[1] : null;
       }).filter(Boolean);
 
       if (filePaths.length > 0) {
