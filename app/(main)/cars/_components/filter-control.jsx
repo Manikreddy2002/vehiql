@@ -57,12 +57,23 @@ export const CarFilterControls = ({
             max={filters.priceRange.max}
             step={100}
             value={priceRange}
-            onValueChange={(value) => onFilterChange("priceRange", value)}
+            onValueChange={(value) => {
+              // Ensure two-number array and clamp within bounds
+              let v = Array.isArray(value) ? value.slice(0, 2) : [filters.priceRange.min, filters.priceRange.max];
+              if (v.length < 2) v = [filters.priceRange.min, filters.priceRange.max];
+              let [min, max] = v.map(Number);
+              if (!Number.isFinite(min)) min = filters.priceRange.min;
+              if (!Number.isFinite(max)) max = filters.priceRange.max;
+              if (min > max) { const tmp = min; min = max; max = tmp; }
+              min = Math.max(filters.priceRange.min, min);
+              max = Math.min(filters.priceRange.max, max);
+              onFilterChange("priceRange", [Math.round(min), Math.round(max)]);
+            }}
           />
         </div>
         <div className="flex items-center justify-between">
-          <div className="font-medium text-sm">$ {priceRange[0]}</div>
-          <div className="font-medium text-sm">$ {priceRange[1]}</div>
+          <div className="font-medium text-sm">$ {Array.isArray(priceRange) ? priceRange[0] : filters.priceRange.min}</div>
+          <div className="font-medium text-sm">$ {Array.isArray(priceRange) ? priceRange[1] : filters.priceRange.max}</div>
         </div>
       </div>
 

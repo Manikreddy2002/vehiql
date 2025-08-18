@@ -86,9 +86,7 @@ export async function getCars({
             })
         }
 
-        let where = {
-            status: "AVAILABLE"
-        }
+        let where = { status: "AVAILABLE" }
 
         if (search) {
             where.OR = [
@@ -103,27 +101,51 @@ export async function getCars({
         if (fuelType) where.fuelType = { equals: fuelType, mode: "insensitive" };
         if (transmission) where.transmission = { equals: transmission, mode: "insensitive" };
 
-        where.price = {
-            gte: parseFloat(minPrice) || 0,
-        };
+        // Robust price parsing and clamping
+        const priceAgg = await db.car.aggregate({
+            where: { status: "AVAILABLE" },
+            _min: { price: true },
+            _max: { price: true },
+        });
+        const absMin = priceAgg._min.price ? parseFloat(priceAgg._min.price.toString()) : 0;
+        const absMax = priceAgg._max.price ? parseFloat(priceAgg._max.price.toString()) : Number.MAX_SAFE_INTEGER;
 
-        if (maxPrice && maxPrice < Number.MAX_SAFE_INTEGER) {
-            where.price.lte = parseFloat(maxPrice);
+        let min = Number(minPrice);
+        let max = Number(maxPrice);
+        if (!Number.isFinite(min)) min = absMin;
+        if (!Number.isFinite(max)) max = absMax;
+        if (min > max) { const tmp = min; min = max; max = tmp; }
+        min = Math.max(absMin, min);
+        max = Math.min(absMax, max);
+
+        where.price = { gte: min };
+        if (Number.isFinite(max) && max < Number.MAX_SAFE_INTEGER) {
+            where.price.lte = max;
         }
 
         const skip = (page - 1) * limit;
 
-        let orderBy = {};
+        // Use deterministic multi-key ordering to avoid duplicates across pages
+        let orderBy = [];
         switch (sortBy) {
             case "priceAsc":
-                orderBy = { price: "asc" };
+                orderBy = [
+                    { price: "asc" },
+                    { id: "asc" },
+                ];
                 break;
             case "priceDesc":
-                orderBy = { price: "desc" };
+                orderBy = [
+                    { price: "desc" },
+                    { id: "asc" },
+                ];
                 break;
             case "newest":
             default:
-                orderBy = { createdAt: "desc" };
+                orderBy = [
+                    { createdAt: "desc" },
+                    { id: "asc" },
+                ];
                 break;
         }
 

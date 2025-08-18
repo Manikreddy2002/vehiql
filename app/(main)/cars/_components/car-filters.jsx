@@ -100,17 +100,28 @@ const CarFilters = ({ filtersData }) => {
         if (bodyType) params.set("bodyType", bodyType);
         if (fuelType) params.set("fuelType", fuelType);
         if (transmission) params.set("transmission", transmission);
-        if (priceRange[0] > filtersData.priceRange.min)
-            params.set("minPrice", priceRange[0].toString());
-        if (priceRange[1] < filtersData.priceRange.max)
-            params.set("maxPrice", priceRange[1].toString());
-        if (sortBy !== "newest") params.set("sortBy", sortBy);
 
-        // Preserve search and page params if they exist
+        // Always persist the current price range explicitly
+        let min = Number(priceRange?.[0]);
+        let max = Number(priceRange?.[1]);
+        const absMin = Number(filtersData.priceRange.min);
+        const absMax = Number(filtersData.priceRange.max);
+        if (!Number.isFinite(min)) min = absMin;
+        if (!Number.isFinite(max)) max = absMax;
+        if (min > max) {
+            const tmp = min; min = max; max = tmp;
+        }
+        // Clamp to absolute bounds
+        min = Math.max(absMin, min);
+        max = Math.min(absMax, max);
+        params.set("minPrice", Math.round(min).toString());
+        params.set("maxPrice", Math.round(max).toString());
+
+        params.set("sortBy", sortBy);
+
+        // Preserve search param if it exists; reset page to 1 on filter changes
         const search = searchParams.get("search");
-        const page = searchParams.get("page");
         if (search) params.set("search", search);
-        if (page && page !== "1") params.set("page", page);
 
         const query = params.toString();
         const url = query ? `${pathname}?${query}` : pathname;
@@ -129,6 +140,37 @@ const CarFilters = ({ filtersData }) => {
         filtersData.priceRange.min,
         filtersData.priceRange.max,
     ]);
+
+    // Immediate apply for mobile price slider (no delay, no sheet close)
+    const applyFiltersImmediateMobilePrice = useCallback(() => {
+        const params = new URLSearchParams();
+        if (make) params.set("make", make);
+        if (bodyType) params.set("bodyType", bodyType);
+        if (fuelType) params.set("fuelType", fuelType);
+        if (transmission) params.set("transmission", transmission);
+
+        let min = Number(priceRange?.[0]);
+        let max = Number(priceRange?.[1]);
+        const absMin = Number(filtersData.priceRange.min);
+        const absMax = Number(filtersData.priceRange.max);
+        if (!Number.isFinite(min)) min = absMin;
+        if (!Number.isFinite(max)) max = absMax;
+        if (min > max) { const tmp = min; min = max; max = tmp; }
+        min = Math.max(absMin, min);
+        max = Math.min(absMax, max);
+        params.set("minPrice", Math.round(min).toString());
+        params.set("maxPrice", Math.round(max).toString());
+
+        params.set("sortBy", sortBy);
+
+        const search = searchParams.get("search");
+        if (search) params.set("search", search);
+
+        const query = params.toString();
+        const url = query ? `${pathname}?${query}` : pathname;
+        // Replace to avoid spamming history while sliding
+        router.replace(url);
+    }, [make, bodyType, fuelType, transmission, priceRange, sortBy, pathname, searchParams, filtersData.priceRange.min, filtersData.priceRange.max, router]);
 
     // Handle filter changes
     const handleFilterChange = (filterName, value) => {
@@ -203,7 +245,15 @@ const CarFilters = ({ filtersData }) => {
                                 <CarFilterControls
                                     filters={filtersData}
                                     currentFilters={currentFilters}
-                                    onFilterChange={handleFilterChange}
+                                    onFilterChange={(filterName, value) => {
+                                        // In mobile sheet, apply price changes immediately (no delay)
+                                        if (filterName === "priceRange") {
+                                            setPriceRange(value);
+                                            applyFiltersImmediateMobilePrice();
+                                            return;
+                                        }
+                                        handleFilterChange(filterName, value);
+                                    }}
                                     onClearFilter={handleClearFilter}
                                 />
                             </div>
@@ -228,7 +278,32 @@ const CarFilters = ({ filtersData }) => {
             value={sortBy}
             onValueChange={(value) => {
                 setSortBy(value);
-                setTimeout(() => applyFilters(), 0);
+                const params = new URLSearchParams();
+                if (make) params.set("make", make);
+                if (bodyType) params.set("bodyType", bodyType);
+                if (fuelType) params.set("fuelType", fuelType);
+                if (transmission) params.set("transmission", transmission);
+
+                let min = Number(priceRange?.[0]);
+                let max = Number(priceRange?.[1]);
+                const absMin = Number(filtersData.priceRange.min);
+                const absMax = Number(filtersData.priceRange.max);
+                if (!Number.isFinite(min)) min = absMin;
+                if (!Number.isFinite(max)) max = absMax;
+                if (min > max) { const tmp = min; min = max; max = tmp; }
+                min = Math.max(absMin, min);
+                max = Math.min(absMax, max);
+                params.set("minPrice", Math.round(min).toString());
+                params.set("maxPrice", Math.round(max).toString());
+
+                params.set("sortBy", value);
+
+                const search = searchParams.get("search");
+                if (search) params.set("search", search);
+
+                const query = params.toString();
+                const url = query ? `${pathname}?${query}` : pathname;
+                router.push(url);
             }}>
 
             <SelectTrigger className="w-[180px] lg:w-full">
