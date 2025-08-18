@@ -5,6 +5,9 @@ import { notFound } from 'next/navigation';
 import { Sidebar } from "./admin/_components/sidebar";
 
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 const AdminLayout = async ({ children }) => {
   const admin = await getAdmin();
 
