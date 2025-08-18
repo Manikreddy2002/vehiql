@@ -8,18 +8,18 @@ const isProtectedRoute = createRouteMatcher([
     "/reservations(.*)",
 ])
 
-const hasArcjetKey = !!process.env.ARCJET_KEY;
-const arcjetMode = process.env.ARCJET_MODE || (process.env.NODE_ENV === 'production' ? 'LIVE' : 'DRY_RUN');
-
-const aj = hasArcjetKey
-    ? arcjet({
-        key: process.env.ARCJET_KEY,
-        rules: [
-            shield({ mode: arcjetMode }),
-            detectBot({ mode: arcjetMode, allow: ["CATEGORY:SEARCH_ENGINE"] })
-        ]
-      })
-    : null;
+const aj = arcjet({
+    key: process.env.ARCJET_KEY,
+    rules: [
+        shield({
+            mode: "LIVE"
+        }),
+        detectBot({
+            mode: "LIVE",
+            allow: ["CATEGORY:SEARCH_ENGINE"]
+        })
+    ]
+})
 
 const clerk = clerkMiddleware(async (auth, req) => {
     const { userId, redirectToSignIn } = await auth();
@@ -29,7 +29,7 @@ const clerk = clerkMiddleware(async (auth, req) => {
     return NextResponse.next();
 });
 
-export default aj ? createMiddleware(aj, clerk) : clerk;
+export default createMiddleware(aj,clerk)
 
 export const config = {
     matcher: [
